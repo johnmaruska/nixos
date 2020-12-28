@@ -4,10 +4,30 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ ./hardware-configuration.nix ];
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    # applications
+    discord
+    emacs
+    firefox
+    spotify
+    steam
+    # programming environments
+    leiningen  # Clojure
+    openjdk8   # JVM
+    # CLI tools
+    ack
+    ag  # TODO: pick one between ack/ag, I have machines that use each because of melpa
+    git
+    lsof
+    # existing in the OS
+    pulseaudio
+    redshift
+  ];
+  nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader = {
@@ -16,8 +36,12 @@
     grub.useOSProber = true;
   };
 
-  # Set your time zone.
+  # Saint Louis, Missouri
   time.timeZone = "America/Chicago";
+  location = {  # for redshift
+    latitude = 38.6;
+    longitude = 90.2;
+  };
 
   networking = {
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
@@ -48,31 +72,45 @@
   #   keyMap = "us";
   # };
 
-  # Enable the GNOME 3 Desktop Environment.
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome3.enable = true;
+  # List services that you want to enable:
+  services = {
+    # Enable the OpenSSH daemon.
+    # openssh.enable = true;
+
+    # Enable CUPS to print documents.
+    # printing.enable = true;
+
+    redshift = {
+      enable = true;
+      temperature = {
+        day = 6400;
+        night = 4600;
+      };
+    };
+
+    xserver = {
+      enable = true;
+      # Enable the GNOME 3 Desktop Environment.
+      displayManager.gdm.enable = true;
+      desktopManager.gnome3.enable = true;
+
+      # Configure keymap in X11
+      # layout = "us";
+      # xkbOptions = "eurosign:e";
+
+      # Enable touchpad support (enabled default in most desktopManager).
+      # libinput.enable = true;
+    };
   };
-
-  # Configure keymap in X11
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
 
   # Enable sound.
   sound.enable = true;
+  nixpkgs.config.pulseaudio = true;
   hardware.pulseaudio = {
     enable = true;
     package = pkgs.pulseaudioFull;
     support32Bit = true;
   };
-  nixpkgs.config.pulseaudio = true;
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   users.users.john = {
     isNormalUser = true;
@@ -84,27 +122,6 @@
     ];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    # applications
-    discord
-    emacs
-    firefox
-    spotify
-    # programming environments
-    leiningen  # Clojure
-    openjdk8   # JVM
-    # CLI tools
-    ack
-    ag  # TODO: pick one between ack/ag, I have machines that use each because of melpa
-    git
-    lsof
-    # drivers
-    pulseaudio
-  ];
-  nixpkgs.config.allowUnfree = true;
-
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -112,11 +129,6 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
