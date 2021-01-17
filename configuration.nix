@@ -124,6 +124,7 @@
     home = "/home/john";
     extraGroups = [
       "audio"  # Enable audio devices for the user
+      "docker"  # BEWARE that the docker group membership is effectively equivalent to being root!
       "networkmanager"
       "wheel"  # Enable 'sudo' for the user
     ];
