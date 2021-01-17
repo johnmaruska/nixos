@@ -13,6 +13,7 @@
     discord
     emacs
     firefox
+    slack
     spotify
     steam
     # programming environments
@@ -21,6 +22,7 @@
     # CLI tools
     ack
     ag  # TODO: pick one between ack/ag, I have machines that use each because of melpa
+    docker
     git
     lsof
     # existing in the OS
@@ -42,6 +44,12 @@
     latitude = 38.6;
     longitude = 90.2;
   };
+
+  # Required for Steam
+  hardware.opengl.driSupport32Bit = true;
+
+  # Required for Docker
+  virtualisation.docker.enable = true;
 
   networking = {
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
@@ -72,7 +80,6 @@
   #   keyMap = "us";
   # };
 
-  # List services that you want to enable:
   services = {
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
@@ -91,8 +98,8 @@
     xserver = {
       enable = true;
       # Enable the GNOME 3 Desktop Environment.
-      displayManager.gdm.enable = true;
       desktopManager.gnome3.enable = true;
+      displayManager.gdm.enable = true;
 
       # Configure keymap in X11
       # layout = "us";
@@ -130,10 +137,6 @@
   #   enableSSHSupport = true;
   # };
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
